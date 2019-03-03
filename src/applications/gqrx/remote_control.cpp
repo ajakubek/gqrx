@@ -4,6 +4,7 @@
  *           http://gqrx.dk/
  *
  * Copyright 2013 Alexandru Csete OZ9AEC.
+ * Copyright 2019 Adam Jakubek
  *
  * Gqrx is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +29,9 @@
 #include <QtGlobal>
 #include "remote_control.h"
 
-#define DEFAULT_RC_PORT            7356
-#define DEFAULT_RC_ALLOWED_HOSTS   "::ffff:127.0.0.1"
-
 RemoteControl::RemoteControl(QObject *parent) :
     QObject(parent)
 {
-
     rc_freq = 0;
     rc_filter_offset = 0;
     bw_half = 740e3;
@@ -47,166 +44,26 @@ RemoteControl::RemoteControl(QObject *parent) :
     audio_recorder_status = false;
     receiver_running = false;
     hamlib_compatible = false;
-
-    rc_port = DEFAULT_RC_PORT;
-    rc_allowed_hosts.append(DEFAULT_RC_ALLOWED_HOSTS);
-
-    rc_socket = 0;
-
-#if QT_VERSION < 0x050900
-    // Disable proxy setting detected by Qt
-    // Workaround for https://bugreports.qt.io/browse/QTBUG-58374
-    // Fix: https://codereview.qt-project.org/#/c/186124/
-    rc_server.setProxy(QNetworkProxy::NoProxy);
-#endif
-
-    connect(&rc_server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
-
 }
 
 RemoteControl::~RemoteControl()
 {
-    stop_server();
 }
 
-/*! \brief Start the server. */
-void RemoteControl::start_server()
+/*! \brief Execute command and return response */
+QString RemoteControl::executeCommand(QString command, bool &quit_requested)
 {
-    if (!rc_server.isListening())
-        rc_server.listen(QHostAddress::Any, rc_port);
-}
-
-/*! \brief Stop the server. */
-void RemoteControl::stop_server()
-{
-    if (rc_socket != 0) {
-        rc_socket->close();
-        rc_socket->deleteLater();
-        rc_socket = 0;
-    }
-
-    if (rc_server.isListening())
-        rc_server.close();
-
-}
-
-/*! \brief Read settings. */
-void RemoteControl::readSettings(QSettings *settings)
-{
-    if (!settings)
-        return;
-
-    settings->beginGroup("remote_control");
-
-    // Get port number; restart server if running
-    if (settings->contains("port"))
-        setPort(settings->value("port").toInt());
-
-    // Get list of allowed hosts
-    if (settings->contains("allowed_hosts"))
-        setHosts(settings->value("allowed_hosts").toStringList());
-
-    settings->endGroup();
-}
-
-void RemoteControl::saveSettings(QSettings *settings) const
-{
-    if (!settings)
-        return;
-
-    settings->beginGroup("remote_control");
-
-    if (rc_server.isListening())
-        settings->setValue("enabled", true);
-    else
-        settings->remove("enabled");
-
-    if (rc_port != DEFAULT_RC_PORT)
-        settings->setValue("port", rc_port);
-    else
-        settings->remove("port");
-
-    if (rc_allowed_hosts.count() > 0)
-        settings->setValue("allowed_hosts", rc_allowed_hosts);
-    else
-        settings->remove("allowed_hosts");
-
-    settings->endGroup();
-}
-
-/*! \brief Set new network port.
- *  \param port The new network port.
- *
- * If the server is running it will be restarted.
- *
- */
-void RemoteControl::setPort(int port)
-{
-    if (port == rc_port)
-        return;
-
-    rc_port = port;
-    if (rc_server.isListening())
-    {
-        rc_server.close();
-        rc_server.listen(QHostAddress::Any, rc_port);
-    }
-}
-
-void RemoteControl::setHosts(QStringList hosts)
-{
-    rc_allowed_hosts = hosts;
-}
-
-
-/*! \brief Accept a new client connection.
- *
- * This slot is called when a client opens a new connection.
- */
-void RemoteControl::acceptConnection()
-{
-    if (rc_socket)
-    {
-        rc_socket->close();
-        rc_socket->deleteLater();
-    }
-    rc_socket = rc_server.nextPendingConnection();
-
-    // check if host is allowed
-    QString address = rc_socket->peerAddress().toString();
-    if (rc_allowed_hosts.indexOf(address) == -1)
-    {
-        std::cout << "*** Remote connection attempt from " << address.toStdString()
-                  << " (not in allowed list)" << std::endl;
-        rc_socket->close();
-        rc_socket->deleteLater();
-        rc_socket = 0;
-    }
-    else
-    {
-        connect(rc_socket, SIGNAL(readyRead()), this, SLOT(startRead()));
-    }
-}
-
-/*! \brief Start reading from the socket.
- *
- * This slot is called when the client TCP socket emits a readyRead() signal,
- * i.e. when there is data to read.
- */
-void RemoteControl::startRead()
-{
-    char    buffer[1024] = {0};
-    int     bytes_read;
     QString answer = "";
 
-    bytes_read = rc_socket->readLine(buffer, 1024);
-    if (bytes_read < 2)  // command + '\n'
-        return;
+    quit_requested = false;
 
-    QStringList cmdlist = QString(buffer).trimmed().split(" ", QString::SkipEmptyParts);
+    if (command.length() < 2)  // command + '\n'
+        return answer;
+
+    QStringList cmdlist = command.trimmed().split(" ", QString::SkipEmptyParts);
 
     if (cmdlist.size() == 0)
-        return;
+        return answer;
 
     QString cmd = cmdlist[0];
     if (cmd == "f")
@@ -246,10 +103,7 @@ void RemoteControl::startRead()
     else if (cmd == "q" || cmd == "Q")
     {
         // FIXME: for now we assume 'close' command
-        rc_socket->close();
-        rc_socket->deleteLater();
-        rc_socket = 0;
-        return;
+        quit_requested = true;
     }
     else
     {
@@ -258,7 +112,7 @@ void RemoteControl::startRead()
         answer = QString("RPRT 1\n");
     }
 
-    rc_socket->write(answer.toLatin1());
+    return answer;
 }
 
 /*! \brief Slot called when the receiver is tuned to a new frequency.

@@ -49,6 +49,8 @@
 #include "applications/gqrx/receiver.h"
 #endif
 
+class TcpRemoteControlServer;
+
 namespace Ui {
     class MainWindow;  /*! The main window UI */
 }
@@ -115,6 +117,7 @@ private:
     receiver *rx;
 
     RemoteControl *remote;
+    TcpRemoteControlServer *remote_ctl_tcp_server;
 
     std::map<QString, QVariant> devList;
 
@@ -209,7 +212,7 @@ private slots:
     void on_actionSaveWaterfall_triggered();
     void on_actionIqTool_triggered();
     void on_actionFullScreen_triggered(bool checked);
-    void on_actionRemoteControl_triggered(bool checked);
+    void on_actionRemoteControlTcpServer_triggered(bool checked);
     void on_actionRemoteConfig_triggered();
     void on_actionAFSK1200_triggered();
     void on_actionUserGroup_triggered();

@@ -233,7 +233,7 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="actionRemoteControl"/>
+    <addaction name="actionRemoteControlTcpServer"/>
     <addaction name="actionRemoteConfig"/>
     <addaction name="separator"/>
     <addaction name="actionAddBookmark"/>
@@ -268,7 +268,7 @@
    <addaction name="separator"/>
    <addaction name="actionIqTool"/>
    <addaction name="separator"/>
-   <addaction name="actionRemoteControl"/>
+   <addaction name="actionRemoteControlTcpServer"/>
    <addaction name="actionRemoteConfig"/>
    <addaction name="separator"/>
    <addaction name="actionFullScreen"/>
@@ -455,7 +455,7 @@
     <string>Ctrl+Shift+B</string>
    </property>
   </action>
-  <action name="actionRemoteControl">
+  <action name="actionRemoteControlTcpServer">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -467,7 +467,7 @@
      <normaloff>:/icons/icons/tangeo-network-idle.svg</normaloff>:/icons/icons/tangeo-network-idle.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Remote control</string>
+    <string>&amp;Remote control TCP server</string>
    </property>
    <property name="toolTip">
     <string>Remote control via TCP</string>

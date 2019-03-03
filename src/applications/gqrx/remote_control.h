@@ -4,6 +4,7 @@
  *           http://gqrx.dk/
  *
  * Copyright 2013 Alexandru Csete OZ9AEC.
+ * Copyright 2019 Adam Jakubek
  *
  * Gqrx is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,24 +61,9 @@ public:
     explicit RemoteControl(QObject *parent = 0);
     ~RemoteControl();
 
-    void start_server(void);
-    void stop_server(void);
-
-    void readSettings(QSettings *settings);
-    void saveSettings(QSettings *settings) const;
-
-    void setPort(int port);
-    int  getPort(void) const
-    {
-        return rc_port;
-    }
-
-    void setHosts(QStringList hosts);
-    QStringList getHosts(void) const
-    {
-        return rc_allowed_hosts;
-    }
     void setReceiverStatus(bool enabled);
+
+    QString executeCommand(QString command, bool &quit_requested);
 
 public slots:
     void setNewFrequency(qint64 freq);
@@ -101,17 +87,7 @@ signals:
     void startAudioRecorderEvent();
     void stopAudioRecorderEvent();
 
-private slots:
-    void acceptConnection();
-    void startRead();
-
 private:
-    QTcpServer  rc_server;         /*!< The active server object. */
-    QTcpSocket* rc_socket;         /*!< The active socket object. */
-
-    QStringList rc_allowed_hosts;  /*!< Hosts where we accept connection from. */
-    int         rc_port;           /*!< The port we are listening on. */
-    
     qint64      rc_freq;
     qint64      rc_filter_offset;
     qint64      bw_half;

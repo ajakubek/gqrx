@@ -54,6 +54,7 @@
 /* DSP */
 #include "receiver.h"
 #include "remote_control_settings.h"
+#include "tcp_remote_control_server.h"
 
 #include "qtgui/bookmarkstaglist.h"
 
@@ -95,6 +96,7 @@ MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
 
     // remote controller
     remote = new RemoteControl();
+    remote_ctl_tcp_server = new TcpRemoteControlServer(remote);
 
     /* meter timer */
     meter_timer = new QTimer(this);
@@ -372,6 +374,7 @@ MainWindow::~MainWindow()
     delete uiDockInputCtl;
     delete uiDockRDS;
     delete rx;
+    delete remote_ctl_tcp_server;
     delete remote;
     delete [] d_fftData;
     delete [] d_realFftData;
@@ -606,12 +609,10 @@ bool MainWindow::loadConfig(const QString cfgfile, bool check_crash,
      * Initialization the remote control at the end.
      * We must be sure that all variables initialized before starting RC server.
      */
-    remote->readSettings(m_settings);
-    bool_val = m_settings->value("remote_control/enabled", false).toBool();
-    if (bool_val)
+    if (remote_ctl_tcp_server->isEnabledInSettings(m_settings))
     {
-       remote->start_server();
-       ui->actionRemoteControl->setChecked(true);
+       remote_ctl_tcp_server->startServer();
+       ui->actionRemoteControlTcpServer->setChecked(true);
     }
 
     return conf_ok;
@@ -691,7 +692,7 @@ void MainWindow::storeSession()
         uiDockFft->saveSettings(m_settings);
         uiDockAudio->saveSettings(m_settings);
 
-        remote->saveSettings(m_settings);
+        remote_ctl_tcp_server->saveSettings(m_settings);
         iq_tool->saveSettings(m_settings);
 
         {
@@ -1937,13 +1938,13 @@ void MainWindow::on_actionFullScreen_triggered(bool checked)
     }
 }
 
-/** Remote control button (or menu item) toggled. */
-void MainWindow::on_actionRemoteControl_triggered(bool checked)
+/** Remote control button (or menu item) for TCP server toggled. */
+void MainWindow::on_actionRemoteControlTcpServer_triggered(bool checked)
 {
     if (checked)
-        remote->start_server();
+        remote_ctl_tcp_server->startServer();
     else
-        remote->stop_server();
+        remote_ctl_tcp_server->stopServer();
 }
 
 /** Remote control configuration button (or menu item) clicked. */
@@ -1951,13 +1952,13 @@ void MainWindow::on_actionRemoteConfig_triggered()
 {
     RemoteControlSettings *rcs = new RemoteControlSettings();
 
-    rcs->setPort(remote->getPort());
-    rcs->setHosts(remote->getHosts());
+    rcs->setPort(remote_ctl_tcp_server->getPort());
+    rcs->setHosts(remote_ctl_tcp_server->getHosts());
 
     if (rcs->exec() == QDialog::Accepted)
     {
-        remote->setPort(rcs->getPort());
-        remote->setHosts(rcs->getHosts());
+        remote_ctl_tcp_server->setPort(rcs->getPort());
+        remote_ctl_tcp_server->setHosts(rcs->getHosts());
     }
 
     delete rcs;
