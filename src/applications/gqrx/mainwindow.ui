@@ -234,7 +234,7 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="actionRemoteControlTcpServer"/>
-    <addaction name="actionRemoteConfig"/>
+    <addaction name="actionRemoteTcpServerConfig"/>
     <addaction name="separator"/>
     <addaction name="actionAddBookmark"/>
     <addaction name="separator"/>
@@ -269,7 +269,7 @@
    <addaction name="actionIqTool"/>
    <addaction name="separator"/>
    <addaction name="actionRemoteControlTcpServer"/>
-   <addaction name="actionRemoteConfig"/>
+   <addaction name="actionRemoteTcpServerConfig"/>
    <addaction name="separator"/>
    <addaction name="actionFullScreen"/>
    <addaction name="separator"/>
@@ -476,16 +476,16 @@
     <string>Activate the TCP interface</string>
    </property>
   </action>
-  <action name="actionRemoteConfig">
+  <action name="actionRemoteTcpServerConfig">
    <property name="icon">
     <iconset resource="../../../resources/icons.qrc">
      <normaloff>:/icons/icons/settings.svg</normaloff>:/icons/icons/settings.svg</iconset>
    </property>
    <property name="text">
-    <string>Remote &amp;control settings</string>
+    <string>Remote TCP server &amp;control settings</string>
    </property>
    <property name="toolTip">
-    <string>Configure remote control settings</string>
+    <string>Configure remote TCP server control settings</string>
    </property>
   </action>
   <action name="actionIqTool">

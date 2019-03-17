@@ -7,11 +7,11 @@ add_source_files(SRCS_LIST
 	gqrx/mainwindow.h
 	gqrx/receiver.cpp
 	gqrx/receiver.h
-	gqrx/remote_control_settings.cpp
-	gqrx/remote_control_settings.h
 	gqrx/remote_control.cpp
 	gqrx/remote_control.h
 	gqrx/tcp_remote_control_server.cpp
+	gqrx/tcp_remote_control_settings.cpp
+	gqrx/tcp_remote_control_settings.h
 	gqrx/file_resources.cpp
 )
 
@@ -19,5 +19,5 @@ add_source_files(SRCS_LIST
 # Add the UI files to UI_SRCS_LIST
 add_source_files(UI_SRCS_LIST
 	gqrx/mainwindow.ui
-	gqrx/remote_control_settings.ui
+	gqrx/tcp_remote_control_settings.ui
 )

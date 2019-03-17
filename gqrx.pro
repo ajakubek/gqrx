@@ -97,7 +97,8 @@ SOURCES += \
     src/applications/gqrx/receiver.cpp \
     src/applications/gqrx/file_resources.cpp \
     src/applications/gqrx/remote_control.cpp \
-    src/applications/gqrx/remote_control_settings.cpp \
+    src/applications/gqrx/tcp_remote_control_server.cpp \
+    src/applications/gqrx/tcp_remote_control_settings.cpp \
     src/dsp/afsk1200/cafsk12.cpp \
     src/dsp/afsk1200/costabf.c \
     src/dsp/agc_impl.cpp \
@@ -141,15 +142,15 @@ SOURCES += \
     src/qtgui/qtcolorpicker.cpp \
     src/receivers/nbrx.cpp \
     src/receivers/receiver_base.cpp \
-    src/receivers/wfmrx.cpp \
-    src/applications/gqrx/tcp_remote_control_server.cpp
+    src/receivers/wfmrx.cpp
 
 HEADERS += \
     src/applications/gqrx/gqrx.h \
     src/applications/gqrx/mainwindow.h \
     src/applications/gqrx/receiver.h \
     src/applications/gqrx/remote_control.h \
-    src/applications/gqrx/remote_control_settings.h \
+    src/applications/gqrx/tcp_remote_control_server.h \
+    src/applications/gqrx/tcp_remote_control_settings.h \
     src/dsp/afsk1200/cafsk12.h \
     src/dsp/afsk1200/filter.h \
     src/dsp/afsk1200/filter-i386.h \
@@ -201,12 +202,11 @@ HEADERS += \
     src/qtgui/qtcolorpicker.h \
     src/receivers/nbrx.h \
     src/receivers/receiver_base.h \
-    src/receivers/wfmrx.h \
-    src/applications/gqrx/tcp_remote_control_server.h
+    src/receivers/wfmrx.h
 
 FORMS += \
     src/applications/gqrx/mainwindow.ui \
-    src/applications/gqrx/remote_control_settings.ui \
+    src/applications/gqrx/tcp_remote_control_settings.ui \
     src/qtgui/afsk1200win.ui \
     src/qtgui/agc_options.ui \
     src/qtgui/audio_options.ui \

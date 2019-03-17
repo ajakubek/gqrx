@@ -213,7 +213,7 @@ private slots:
     void on_actionIqTool_triggered();
     void on_actionFullScreen_triggered(bool checked);
     void on_actionRemoteControlTcpServer_triggered(bool checked);
-    void on_actionRemoteConfig_triggered();
+    void on_actionRemoteTcpServerConfig_triggered();
     void on_actionAFSK1200_triggered();
     void on_actionUserGroup_triggered();
     void on_actionNews_triggered();

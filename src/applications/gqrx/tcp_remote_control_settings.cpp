@@ -4,6 +4,7 @@
  *           http://gqrx.dk/
  *
  * Copyright 2013 Alexandru Csete OZ9AEC.
+ * Copyright 2019 Adam Jakubek
  *
  * Gqrx is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,17 +24,17 @@
 #include <QList>
 #include <QListWidgetItem>
 
-#include "remote_control_settings.h"
-#include "ui_remote_control_settings.h"
+#include "tcp_remote_control_settings.h"
+#include "ui_tcp_remote_control_settings.h"
 
-RemoteControlSettings::RemoteControlSettings(QWidget *parent) :
+TcpRemoteControlSettings::TcpRemoteControlSettings(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::RemoteControlSettings)
+    ui(new Ui::TcpRemoteControlSettings)
 {
     ui->setupUi(this);
 }
 
-RemoteControlSettings::~RemoteControlSettings()
+TcpRemoteControlSettings::~TcpRemoteControlSettings()
 {
     delete ui;
 }
@@ -41,7 +42,7 @@ RemoteControlSettings::~RemoteControlSettings()
 /*! \brief Set new network port.
  *  \param port The new network port.
  */
-void RemoteControlSettings::setPort(int port)
+void TcpRemoteControlSettings::setPort(int port)
 {
     ui->portSpinBox->setValue(port);
 }
@@ -49,7 +50,7 @@ void RemoteControlSettings::setPort(int port)
 /*! \brief Get current value from the port spin box.
  *  \return The current port value.
  */
-int RemoteControlSettings::getPort(void) const
+int TcpRemoteControlSettings::getPort(void) const
 {
     return ui->portSpinBox->value();
 }
@@ -60,14 +61,14 @@ int RemoteControlSettings::getPort(void) const
  * Note that setting the list wil lclear the current contents of the
  * list widget.
  */
-void RemoteControlSettings::setHosts(QStringList hosts)
+void TcpRemoteControlSettings::setHosts(QStringList hosts)
 {
     ui->hostListWidget->clear();
     ui->hostListWidget->addItems(hosts);
 }
 
 /*! \brief Get list of allowed hosts. */
-QStringList RemoteControlSettings::getHosts(void) const
+QStringList TcpRemoteControlSettings::getHosts(void) const
 {
     QStringList list;
 
@@ -85,7 +86,7 @@ QStringList RemoteControlSettings::getHosts(void) const
  * The function inserts a  new entry at the end of the list and enables
  * editing.
  */
-void RemoteControlSettings::on_hostAddButton_clicked(void)
+void TcpRemoteControlSettings::on_hostAddButton_clicked(void)
 {
     ui->hostListWidget->addItem(tr("Enter IP"));
 
@@ -96,7 +97,7 @@ void RemoteControlSettings::on_hostAddButton_clicked(void)
 }
 
 /*! \brief Delete the selected entries from the list of allowed hosts. */
-void RemoteControlSettings::on_hostDelButton_clicked(void)
+void TcpRemoteControlSettings::on_hostDelButton_clicked(void)
 {
     // wondering WTF?
     // see http://stackoverflow.com/questions/7008423/how-do-i-remove-all-the-selected-items-in-a-qlistwidget

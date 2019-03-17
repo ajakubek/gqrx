@@ -53,7 +53,7 @@
 
 /* DSP */
 #include "receiver.h"
-#include "remote_control_settings.h"
+#include "tcp_remote_control_settings.h"
 #include "tcp_remote_control_server.h"
 
 #include "qtgui/bookmarkstaglist.h"
@@ -1947,21 +1947,24 @@ void MainWindow::on_actionRemoteControlTcpServer_triggered(bool checked)
         remote_ctl_tcp_server->stopServer();
 }
 
-/** Remote control configuration button (or menu item) clicked. */
-void MainWindow::on_actionRemoteConfig_triggered()
+/**
+ * Remote control configuration button (or menu item) for TCP server
+ * clicked.
+ */
+void MainWindow::on_actionRemoteTcpServerConfig_triggered()
 {
-    RemoteControlSettings *rcs = new RemoteControlSettings();
+    TcpRemoteControlSettings *trcs = new TcpRemoteControlSettings();
 
-    rcs->setPort(remote_ctl_tcp_server->getPort());
-    rcs->setHosts(remote_ctl_tcp_server->getHosts());
+    trcs->setPort(remote_ctl_tcp_server->getPort());
+    trcs->setHosts(remote_ctl_tcp_server->getHosts());
 
-    if (rcs->exec() == QDialog::Accepted)
+    if (trcs->exec() == QDialog::Accepted)
     {
-        remote_ctl_tcp_server->setPort(rcs->getPort());
-        remote_ctl_tcp_server->setHosts(rcs->getHosts());
+        remote_ctl_tcp_server->setPort(trcs->getPort());
+        remote_ctl_tcp_server->setHosts(trcs->getHosts());
     }
 
-    delete rcs;
+    delete trcs;
 }
 
 

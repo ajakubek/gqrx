@@ -4,6 +4,7 @@
  *           http://gqrx.dk/
  *
  * Copyright 2013 Alexandru Csete OZ9AEC.
+ * Copyright 2019 Adam Jakubek
  *
  * Gqrx is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,25 +21,25 @@
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef REMOTE_CONTROL_SETTINGS_H
-#define REMOTE_CONTROL_SETTINGS_H
+#ifndef TCP_REMOTE_CONTROL_SETTINGS_H
+#define TCP_REMOTE_CONTROL_SETTINGS_H
 
 #include <QDialog>
 #include <QSettings>
 #include <QStringList>
 
 namespace Ui {
-class RemoteControlSettings;
+class TcpRemoteControlSettings;
 }
 
 /*! \brief Class to configure remote control settiongs. */
-class RemoteControlSettings : public QDialog
+class TcpRemoteControlSettings : public QDialog
 {
     Q_OBJECT
     
 public:
-    explicit RemoteControlSettings(QWidget *parent = 0);
-    ~RemoteControlSettings();
+    explicit TcpRemoteControlSettings(QWidget *parent = 0);
+    ~TcpRemoteControlSettings();
 
     void setPort(int port);
     int  getPort(void) const;
@@ -51,7 +52,7 @@ private slots:
     void on_hostDelButton_clicked(void);
 
 private:
-    Ui::RemoteControlSettings *ui;
+    Ui::TcpRemoteControlSettings *ui;
 };
 
-#endif // REMOTE_CONTROL_SETTINGS_H
+#endif // TCP_REMOTE_CONTROL_SETTINGS_H
