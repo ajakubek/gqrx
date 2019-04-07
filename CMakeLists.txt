@@ -104,7 +104,11 @@ if(APPLE AND EXISTS /usr/local/opt/qt5)
 endif()
 
 # 3rd Party Dependency Stuff
-find_package(Qt5 COMPONENTS Core Network Widgets Svg REQUIRED)
+set(qt5_required_components Core Network Widgets Svg)
+if(${ENABLE_SERIAL_REMOTE_CONTROL})
+    list(APPEND qt5_required_components SerialPort)
+endif()
+find_package(Qt5 REQUIRED COMPONENTS ${qt5_required_components})
 find_package(Boost COMPONENTS system program_options REQUIRED)
 set(GR_REQUIRED_COMPONENTS RUNTIME ANALOG AUDIO BLOCKS DIGITAL FILTER FFT PMT)
 find_package(Gnuradio REQUIRED)
@@ -180,6 +184,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     else()
         message(FATAL_ERROR "Invalid audio backend: should be either Portaudio or Gr-audio")
     endif()
+endif()
+
+
+if(${ENABLE_SERIAL_REMOTE_CONTROL})
+    add_definitions(-DENABLE_SERIAL_REMOTE_CONTROL)
 endif()
 
 

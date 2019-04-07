@@ -251,6 +251,20 @@ equals(AUDIO_BACKEND, "pulseaudio"): {
     }
 }
 
+serial_remote_control {
+    message("Gqrx configured with serial remote control support.")
+    QT += serialport
+    DEFINES += ENABLE_SERIAL_REMOTE_CONTROL
+    SOURCES += \
+        src/applications/gqrx/serial_remote_control_device.cpp \
+        src/applications/gqrx/serial_remote_control_settings.cpp
+    HEADERS += \
+        src/applications/gqrx/serial_remote_control_device.h \
+        src/applications/gqrx/serial_remote_control_settings.h
+    FORMS += \
+        src/applications/gqrx/serial_remote_control_settings.ui
+}
+
 macx {
     # FIXME: Merge into previous one
     HEADERS += src/osxaudio/device_list.h

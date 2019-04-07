@@ -51,6 +51,10 @@
 
 class TcpRemoteControlServer;
 
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+class SerialRemoteControlDevice;
+#endif
+
 namespace Ui {
     class MainWindow;  /*! The main window UI */
 }
@@ -118,6 +122,9 @@ private:
 
     RemoteControl *remote;
     TcpRemoteControlServer *remote_ctl_tcp_server;
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+    SerialRemoteControlDevice *remote_ctl_serial_device;
+#endif
 
     std::map<QString, QVariant> devList;
 
@@ -214,6 +221,10 @@ private slots:
     void on_actionFullScreen_triggered(bool checked);
     void on_actionRemoteControlTcpServer_triggered(bool checked);
     void on_actionRemoteTcpServerConfig_triggered();
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+    void on_actionRemoteControlSerialDevice_triggered(bool checked);
+    void on_actionRemoteSerialDeviceConfig_triggered();
+#endif
     void on_actionAFSK1200_triggered();
     void on_actionUserGroup_triggered();
     void on_actionNews_triggered();

@@ -195,7 +195,7 @@
      <x>0</x>
      <y>0</y>
      <width>521</width>
-     <height>19</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -235,6 +235,8 @@
     </property>
     <addaction name="actionRemoteControlTcpServer"/>
     <addaction name="actionRemoteTcpServerConfig"/>
+    <addaction name="actionRemoteControlSerialDevice"/>
+    <addaction name="actionRemoteSerialDeviceConfig"/>
     <addaction name="separator"/>
     <addaction name="actionAddBookmark"/>
     <addaction name="separator"/>
@@ -270,6 +272,8 @@
    <addaction name="separator"/>
    <addaction name="actionRemoteControlTcpServer"/>
    <addaction name="actionRemoteTcpServerConfig"/>
+   <addaction name="actionRemoteControlSerialDevice"/>
+   <addaction name="actionRemoteSerialDeviceConfig"/>
    <addaction name="separator"/>
    <addaction name="actionFullScreen"/>
    <addaction name="separator"/>
@@ -539,6 +543,39 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionRemoteControlSerialDevice">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../resources/icons.qrc">
+     <normaloff>:/icons/icons/preferences-desktop.svg</normaloff>:/icons/icons/preferences-desktop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Remote control serial device</string>
+   </property>
+   <property name="toolTip">
+    <string>Remote control via serial device</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionRemoteSerialDeviceConfig">
+   <property name="icon">
+    <iconset resource="../../../resources/icons.qrc">
+     <normaloff>:/icons/icons/settings.svg</normaloff>:/icons/icons/settings.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Remote serial device control settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure remote serial device control settings</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

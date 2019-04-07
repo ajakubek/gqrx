@@ -56,6 +56,11 @@
 #include "tcp_remote_control_settings.h"
 #include "tcp_remote_control_server.h"
 
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+#include "serial_remote_control_device.h"
+#include "serial_remote_control_settings.h"
+#endif
+
 #include "qtgui/bookmarkstaglist.h"
 
 MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
@@ -97,6 +102,12 @@ MainWindow::MainWindow(const QString cfgfile, bool edit_conf, QWidget *parent) :
     // remote controller
     remote = new RemoteControl();
     remote_ctl_tcp_server = new TcpRemoteControlServer(remote);
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+    remote_ctl_serial_device = new SerialRemoteControlDevice(remote);
+
+    ui->actionRemoteControlSerialDevice->setVisible(true);
+    ui->actionRemoteSerialDeviceConfig->setVisible(true);
+#endif
 
     /* meter timer */
     meter_timer = new QTimer(this);
@@ -374,6 +385,9 @@ MainWindow::~MainWindow()
     delete uiDockInputCtl;
     delete uiDockRDS;
     delete rx;
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+    delete remote_ctl_serial_device;
+#endif
     delete remote_ctl_tcp_server;
     delete remote;
     delete [] d_fftData;
@@ -615,6 +629,15 @@ bool MainWindow::loadConfig(const QString cfgfile, bool check_crash,
        ui->actionRemoteControlTcpServer->setChecked(true);
     }
 
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+    if (remote_ctl_serial_device->isEnabledInSettings(m_settings))
+    {
+        remote_ctl_serial_device->readSettings(m_settings);
+        const bool serialOpened = remote_ctl_serial_device->openDevice();
+        ui->actionRemoteControlSerialDevice->setChecked(serialOpened);
+    }
+#endif
+
     return conf_ok;
 }
 
@@ -693,6 +716,10 @@ void MainWindow::storeSession()
         uiDockAudio->saveSettings(m_settings);
 
         remote_ctl_tcp_server->saveSettings(m_settings);
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+        remote_ctl_serial_device->saveSettings(m_settings);
+#endif
+
         iq_tool->saveSettings(m_settings);
 
         {
@@ -1966,6 +1993,57 @@ void MainWindow::on_actionRemoteTcpServerConfig_triggered()
 
     delete trcs;
 }
+
+#if defined(ENABLE_SERIAL_REMOTE_CONTROL)
+
+/** Remote control button (or menu item) for serial device toggled. */
+void MainWindow::on_actionRemoteControlSerialDevice_triggered(bool checked)
+{
+    if (checked)
+    {
+        const bool serialOpened = remote_ctl_serial_device->openDevice();
+        if (!serialOpened)
+        {
+            ui->actionRemoteControlSerialDevice->setChecked(false);
+            QMessageBox::warning(
+                this,
+                tr("Error"),
+                tr("There was an error opening serial controller device.\n"
+                   "Please make sure that a supported device is attached "
+                   "to the computer and correctly configured."));
+        }
+    }
+    else
+        remote_ctl_serial_device->closeDevice();
+}
+
+/**
+ * Remote control configuration button (or menu item) for serial device
+ * clicked.
+ */
+void MainWindow::on_actionRemoteSerialDeviceConfig_triggered()
+{
+    SerialRemoteControlSettings *srcs = new SerialRemoteControlSettings();
+
+    srcs->setPortName(remote_ctl_serial_device->getPortName());
+    srcs->setBaudRate(remote_ctl_serial_device->getBaudRate());
+
+    if (srcs->exec() == QDialog::Accepted)
+    {
+        remote_ctl_serial_device->setPortName(srcs->getPortName());
+        remote_ctl_serial_device->setBaudRate(srcs->getBaudRate());
+
+        if (remote_ctl_serial_device->isDeviceOpen())
+        {
+            remote_ctl_serial_device->closeDevice();
+            remote_ctl_serial_device->openDevice();
+        }
+    }
+
+    delete srcs;
+}
+
+#endif // ENABLE_SERIAL_REMOTE_CONTROL
 
 
 #define DATA_BUFFER_SIZE 48000

@@ -59,12 +59,18 @@ endif(WIN32)
 # Build the program
 add_executable(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCE} ${UIS_HDRS} ${RESOURCES_LIST})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-# The pulse libraries are only needed on Linux. On other platforms they will not be found, so having them here is fine.
-target_link_libraries(${PROJECT_NAME}
+# Enable QtSerial only when requested.
+set(qt5_modules
     Qt5::Core
     Qt5::Network
     Qt5::Widgets
-    Qt5::Svg
+    Qt5::Svg)
+if(${ENABLE_SERIAL_REMOTE_CONTROL})
+    list(APPEND qt5_modules Qt5::SerialPort)
+endif()
+# The pulse libraries are only needed on Linux. On other platforms they will not be found, so having them here is fine.
+target_link_libraries(${PROJECT_NAME}
+    ${qt5_modules}
     ${Boost_LIBRARIES}
     ${GNURADIO_ALL_LIBRARIES}
     ${GNURADIO_OSMOSDR_LIBRARIES}
